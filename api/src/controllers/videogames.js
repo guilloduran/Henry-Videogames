@@ -23,15 +23,37 @@ module.exports = {
         },
         include: {
           model: Genre,
+          through: {
+            attributes: [],
+          },
         },
       });
       result = [...resultDb, ...resultFetch];
     }
     if (result.length > 0) {
-      return result;
+      let newResult = result.map((e) => {
+        const picked = (({
+          id,
+          name,
+          ratings,
+          platforms,
+          genres,
+          released,
+          background_image,
+        }) => ({
+          id,
+          name,
+          ratings,
+          platforms,
+          genres,
+          released,
+          background_image,
+        }))(e);
+        return picked;
+      });
+      return newResult;
     } else throw new Error('No existe el juego buscado');
   },
-
   getAllVideogames: async () => {
     let result = [];
     let fetchResult = [];
@@ -51,26 +73,82 @@ module.exports = {
     let resultDb = await Videogame.findAll({
       include: {
         model: Genre,
+        through: {
+          attributes: [],
+        },
       },
     });
     result = [...fetchResult, ...resultDb];
-    return result;
+    let newResult = result.map((e) => {
+      const picked = (({
+        id,
+        name,
+        ratings,
+        platforms,
+        genres,
+        released,
+        background_image,
+      }) => ({
+        id,
+        name,
+        ratings,
+        platforms,
+        genres,
+        released,
+        background_image,
+      }))(e);
+      return picked;
+    });
+    return newResult;
   },
   getVideogameById: async (id) => {
-    let result = await fetch(
-      `https://api.rawg.io/api/games/${id}?key=${API_KEY}`
-    )
-      .then((r) => r.json())
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-    if (result.detail) {
-      throw new Error('No existe el juego con este ID');
+    if (id.length < 8) {
+      let resultFetch = await fetch(
+        `https://api.rawg.io/api/games/${id}?key=${API_KEY}`
+      )
+        .then((r) => r.json())
+        .then((data) => {
+          return data;
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+      if (resultFetch.detail) {
+        throw new Error('No existe el juego con este ID');
+      } else {
+        const picked = (({
+          name,
+          ratings,
+          platforms,
+          genres,
+          description,
+          released,
+          background_image,
+        }) => ({
+          name,
+          ratings,
+          platforms,
+          genres,
+          description,
+          released,
+          background_image,
+        }))(resultFetch);
+        return picked;
+      }
     } else {
-      return result;
+      let resultDb = await Videogame.findByPk(id, {
+        include: {
+          model: Genre,
+          through: {
+            attributes: [],
+          },
+        },
+      });
+      if (!resultDb) {
+        throw new Error('No existe el juego con este ID');
+      } else {
+        return resultDb;
+      }
     }
   },
 };

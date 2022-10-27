@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const videogameController = require('../controllers/videogames');
 const genreController = require('../controllers/genres');
-const { Op } = require('sequelize');
 const { Videogame, Genre } = require('../db');
 
 // Importar todos los routers;
@@ -31,8 +30,7 @@ router.get('/:id', async (req, res) => {
     let result = await videogameController.getVideogameById(id);
     res.status(200).send(result);
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
+    res.status(400).send((error.message = 'No existe un juego con este ID'));
   }
 });
 

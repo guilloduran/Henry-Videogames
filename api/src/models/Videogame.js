@@ -10,6 +10,9 @@ module.exports = (sequelize) => {
       unique: true,
       primaryKey: true,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     name: {
       type: DataTypes.STRING,
@@ -18,12 +21,19 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     released: {
       type: DataTypes.STRING,
     },
     rating: {
       type: DataTypes.INTEGER,
+      validate: {
+        max: 5,
+        min: 0,
+      },
     },
     platforms: {
       type: DataTypes.STRING,
