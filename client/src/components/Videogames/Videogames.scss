@@ -1,0 +1,119 @@
+.searchbar {
+  margin-bottom: 20px;
+}
+.videogame-container {
+  width: 95%;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  flex-wrap: wrap;
+}
+.filters-containers {
+  width: 90%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: auto;
+}
+.select {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 15px;
+  width: 18%;
+}
+.select select {
+  font-family: 'Raleway';
+  display: inline-block;
+  width: 100%;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 10px;
+  background: rgb(51, 51, 51);
+  color: #ffffff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.select select::-ms-expand {
+  display: none;
+}
+.select select:hover,
+.select select:focus {
+  color: #000000;
+  background: rgb(89, 89, 89);
+}
+.select select:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.select_arrow {
+  position: absolute;
+  top: 11px;
+  right: 15px;
+  pointer-events: none;
+  border-style: solid;
+  border-width: 8px 5px 0px 5px;
+  border-color: #ffffff transparent transparent transparent;
+}
+.select select:hover ~ .select_arrow,
+.select select:focus ~ .select_arrow {
+  border-top-color: #000000;
+}
+.select select:disabled ~ .select_arrow {
+  border-top-color: #cccccc;
+}
+.loading {
+  background: url('../../img/loading.gif');
+  width: 200px;
+  height: 200px;
+  background-repeat: no-repeat;
+}
+.spinner {
+  --clr: rgb(123, 123, 123);
+  --gap: 6px;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap);
+  margin-top: 250px;
+}
+
+.spinner span {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: var(--clr);
+  opacity: 0;
+}
+
+.spinner span:nth-child(1) {
+  animation: fade 1s ease-in-out infinite;
+}
+
+.spinner span:nth-child(2) {
+  animation: fade 1s ease-in-out 0.33s infinite;
+}
+
+.spinner span:nth-child(3) {
+  animation: fade 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 0;
+  }
+}
+.message-error {
+  margin-top: 150px;
+  font-size: 24px;
+}

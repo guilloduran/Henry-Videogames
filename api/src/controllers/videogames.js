@@ -5,21 +5,22 @@ const { API_KEY } = process.env;
 module.exports = {
   getVideogames: async (name) => {
     let result = [];
+
     if (name !== null) {
+      let videogame = name.toLowerCase();
       let resultFetch = await fetch(
-        `https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`
+        `https://api.rawg.io/api/games?search=${videogame}&key=${API_KEY}`
       )
         .then((r) => r.json())
         .then((data) => {
-          return data.results.slice(0, 15);
+          return data.results;
         })
         .catch((error) => {
           throw new Error(error);
         });
-
       let resultDb = await Videogame.findAll({
         where: {
-          name: { [Op.substring]: `${name}` },
+          name: { [Op.substring]: `${videogame}` },
         },
         include: {
           model: Genre,
@@ -31,28 +32,30 @@ module.exports = {
       result = [...resultDb, ...resultFetch];
     }
     if (result.length > 0) {
-      let newResult = result.map((e) => {
+      let newResult = result.map((props) => {
         const picked = (({
           id,
           name,
-          ratings,
+          rating,
           platforms,
           genres,
           released,
           background_image,
+          createdInDb,
         }) => ({
           id,
           name,
-          ratings,
+          rating,
           platforms,
           genres,
           released,
           background_image,
-        }))(e);
+          createdInDb,
+        }))(props);
         return picked;
       });
       return newResult;
-    } else throw new Error('No existe el juego buscado');
+    } else throw new Error('Game was not found!');
   },
   getAllVideogames: async () => {
     let result = [];
@@ -79,24 +82,26 @@ module.exports = {
       },
     });
     result = [...fetchResult, ...resultDb];
-    let newResult = result.map((e) => {
+    let newResult = result.map((props) => {
       const picked = (({
         id,
         name,
-        ratings,
+        rating,
         platforms,
         genres,
         released,
         background_image,
+        createdInDb,
       }) => ({
         id,
         name,
-        ratings,
+        rating,
         platforms,
         genres,
         released,
         background_image,
-      }))(e);
+        createdInDb,
+      }))(props);
       return picked;
     });
     return newResult;
@@ -111,27 +116,31 @@ module.exports = {
           return data;
         })
         .catch((error) => {
+          console.log(error);
           throw new Error(error);
         });
+
       if (resultFetch.detail) {
-        throw new Error('No existe el juego con este ID');
+        throw new Error(error);
       } else {
         const picked = (({
           name,
-          ratings,
+          rating,
           platforms,
           genres,
-          description,
+          description_raw,
           released,
           background_image,
+          createdInDb,
         }) => ({
           name,
-          ratings,
+          rating,
           platforms,
           genres,
-          description,
+          description_raw,
           released,
           background_image,
+          createdInDb,
         }))(resultFetch);
         return picked;
       }
@@ -145,7 +154,7 @@ module.exports = {
         },
       });
       if (!resultDb) {
-        throw new Error('No existe el juego con este ID');
+        throw new Error('No game was found with this ID!');
       } else {
         return resultDb;
       }

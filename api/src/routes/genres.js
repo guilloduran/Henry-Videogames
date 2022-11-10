@@ -11,7 +11,7 @@ const router = Router();
 // Ejemplo: router.use('/auth', authRouter);
 router.get('/', async (req, res) => {
   try {
-    await genreController.fetchGenre();
+    await genreController.checkGenre();
     res.status(200).send(await Genre.findAll());
   } catch (error) {
     res.status(400).send(error.message);
